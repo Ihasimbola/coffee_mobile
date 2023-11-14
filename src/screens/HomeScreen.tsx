@@ -1,7 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { NativeSyntheticEvent, ScrollView, StatusBar, StyleSheet, Text, TextInputTextInputEventData, View } from 'react-native'
 import React, { useState } from 'react'
 import { useStore } from '../store/store';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
+import HeaderBar from '../components/HeaderBar';
+import Input from '../components/Input';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -29,7 +32,7 @@ const HomeScreen = () => {
 
   // states
   const [ categories, setCategories ] = useState(getCategoriesFromData(CoffeeList));
-  const [ serachText, setSearchText ] = useState("");
+  const [ searchText, setSearchText ] = useState<string>("");
   const [ categoryIndex, setCtegoryIndex ] = useState({
     index: 0,
     category: categories[0]
@@ -39,12 +42,42 @@ const HomeScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <View>
-      <Text>Home Screen</Text>
+    <View style={styles.ScreenContainer}>
+      <StatusBar backgroundColor={COLORS.primaryBlackHex} />
+      <ScrollView
+       contentContainerStyle={styles.SCrollViewFlex}
+       showsVerticalScrollIndicator={false}
+      >
+        {/* Header bar */}
+        <HeaderBar />
+
+        <Text style={styles.screenTitle}>
+          Find the best {'\n'}coffee for you
+        </Text>
+
+        <Input inputValue={searchText} setValue={setSearchText} />
+
+      </ScrollView>
     </View> 
   )
 }
 
 export default HomeScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  ScreenContainer: {
+    flex: 1,
+    backgroundColor: COLORS.primaryBlackHex
+  },
+  SCrollViewFlex: {
+    flexGrow: 1
+  },
+
+  screenTitle: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_28,
+    color: COLORS.primaryWhiteHex,
+    paddingLeft: SPACING.space_30,
+
+  }
+})
