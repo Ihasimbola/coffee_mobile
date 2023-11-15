@@ -7,7 +7,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from './src/navigators/TabNavigator'
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Tab: undefined,
+  Detail: { itemId: string, type: string },
+  Payment: undefined
+}
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   return (
@@ -22,7 +28,7 @@ const App = () => {
           name="Detail"
           component={DetailsScreen}
           options={{
-            animation: 'slide_from_bottom'
+            animation: 'slide_from_bottom',
           }}
         />
 

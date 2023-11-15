@@ -2,29 +2,7 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import CustomIcon from './CustomIcon';
-
-interface IPrices {
-  size: "S" | "M" | "L";
-  price: string;
-  currency: string
-}
-
-export type PropsType = {
-    id: string,
-    name: string,
-    description: string,
-    roasted: string,
-    imagelink_square: any,
-    imagelink_portrait:any,
-    ingredients: string,
-    special_ingredient: string,
-    prices: IPrices[],
-    average_rating: number,
-    ratings_count: string,
-    favourite: boolean,
-    type: string,
-    index: number,
-}
+import { IPrices } from '../types/price';
 
 interface IProps {
   item: {

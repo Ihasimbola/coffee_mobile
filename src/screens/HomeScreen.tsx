@@ -1,4 +1,4 @@
-import { FlatList, NativeSyntheticEvent, ScrollView, StatusBar, StyleSheet, Text, TextInputTextInputEventData, TouchableOpacity, View } from 'react-native'
+import { FlatList, NativeSyntheticEvent, ScrollView, StatusBar, StyleSheet, Text, TextInputTextInputEventData, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useStore } from '../store/store';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -7,7 +7,7 @@ import HeaderBar from '../components/HeaderBar';
 import Input from '../components/Input';
 import Categories from '../components/Categories';
 import CoffeeCard from '../components/CoffeeCard';
-import { PropsType } from '../components/CoffeeCard';
+import { CoffeeType } from "../types/coffee"
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -32,7 +32,7 @@ const getCoffeeList = (category: string, data: any) => {
   }
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: any) => {
   // stores
   const CoffeeList = useStore((state: any) => state.CoffeeList);
   const BeanList = useStore((state: any) => state.BeanList);
@@ -45,7 +45,7 @@ const HomeScreen = () => {
     category: categories[0]
   });
 
-  const [ sortedCoffee, setSortedCoffee ] = useState<PropsType[]>(getCoffeeList(categoryIndex.category, CoffeeList))
+  const [ sortedCoffee, setSortedCoffee ] = useState<CoffeeType[]>(getCoffeeList(categoryIndex.category, CoffeeList))
 
   useLayoutEffect(() => {
     setSortedCoffee([ ...getCoffeeList(categoryIndex.category, CoffeeList) ]);
@@ -55,7 +55,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.ScreenContainer}>
-      <StatusBar backgroundColor={COLORS.primaryBlackHex} />
+      <StatusBar backgroundColor={COLORS.primaryBlackHex} translucent={true} />
       <ScrollView
        contentContainerStyle={styles.SCrollViewFlex}
        showsVerticalScrollIndicator={false}
@@ -85,7 +85,12 @@ const HomeScreen = () => {
             data={sortedCoffee}
             keyExtractor={item => item.id}
             renderItem={(item) => (
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Detail", {
+                  itemId: item.item.id,
+                  type: item.item.type
+                })}
+              >
                 <CoffeeCard item={item.item} />
               </TouchableOpacity>
             )}
@@ -107,7 +112,10 @@ const HomeScreen = () => {
               data={BeanList}
               keyExtractor={item => item.id}
               renderItem={(item) => (
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Detail', {
+                  itemId: item.item.id,
+                  type: item.item.type
+                })}>
                   <CoffeeCard item={item.item} />
                 </TouchableOpacity>
               )}
