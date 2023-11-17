@@ -4,6 +4,7 @@ import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import CustomIcon from './CustomIcon';
 import { IPrices } from '../types/price';
 import AppButton from './AppButton';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface IProps {
   item: {
@@ -27,31 +28,38 @@ interface IProps {
 const CoffeeCard = ({ item }: IProps) => {
 
   return (
-    <View style={styles.cardContainer}>
+    // <View >
+       <LinearGradient
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
+        style={styles.cardContainer}
+       >
         <View style={styles.imgWrapper}>
-          <View style={styles.ratingWrapper}>
-            <CustomIcon name="star" size={10} color={COLORS.primaryOrangeHex} />
-           { item.type === "Coffee" && <Text style={styles.rating}>{ item.average_rating }</Text> }
+            <View style={styles.ratingWrapper}>
+              <CustomIcon name="star" size={10} color={COLORS.primaryOrangeHex} />
+            { item.type === "Coffee" && <Text style={styles.rating}>{ item.average_rating }</Text> }
+            </View>
+            <Image 
+              source={item.imagelink_square}
+              style={styles.image}
+            />
           </View>
-          <Image 
-            source={item.imagelink_square}
-            style={styles.image}
-          />
-        </View>
-        <View style={styles.nameWrapper}>
-          <Text style={styles.name}>{ item.name }</Text>
-          <Text style={[styles.name, styles.specialName]}>{ item.special_ingredient }</Text>
-        </View>
-        <View style={styles.priceWrapper}>
-          <Text style={styles.price}>
-            <Text style={styles.currency}>{item.prices[0].currency}</Text>
-            { ` ${item.prices[2].price}` }
-          </Text>
-          <TouchableOpacity>
-            <AppButton iconName='add' iconColor={COLORS.secondaryLightGreyHex} bgColor={COLORS.primaryOrangeHex}/>
-          </TouchableOpacity>
-        </View>
-    </View>
+          <View style={styles.nameWrapper}>
+            <Text style={styles.name}>{ item.name }</Text>
+            <Text style={[styles.name, styles.specialName]}>{ item.special_ingredient }</Text>
+          </View>
+          <View style={styles.priceWrapper}>
+            <Text style={styles.price}>
+              <Text style={styles.currency}>{item.prices[0].currency}</Text>
+              { ` ${item.prices[2].price}` }
+            </Text>
+            <TouchableOpacity>
+              <AppButton iconName='add' iconColor={COLORS.secondaryLightGreyHex} bgColor={COLORS.primaryOrangeHex}/>
+            </TouchableOpacity>
+          </View>
+       </LinearGradient>
+    // </View>
   )
 }
 
