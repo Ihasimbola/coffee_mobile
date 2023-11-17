@@ -26,7 +26,6 @@ const GradientBGIcon: React.FC<PropsType> = ({ iconName, size, color }) => {
   )
 }
 
-export default GradientBGIcon
 
 const styles = StyleSheet.create({
   container: {
@@ -45,3 +44,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 })
+  
+
+export default GradientBGIcon

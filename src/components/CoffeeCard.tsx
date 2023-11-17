@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import CustomIcon from './CustomIcon';
 import { IPrices } from '../types/price';
+import AppButton from './AppButton';
 
 interface IProps {
   item: {
@@ -46,13 +47,16 @@ const CoffeeCard = ({ item }: IProps) => {
             <Text style={styles.currency}>{item.prices[0].currency}</Text>
             { ` ${item.prices[2].price}` }
           </Text>
+          <TouchableOpacity>
+            <AppButton iconName='add' iconColor={COLORS.secondaryLightGreyHex} bgColor={COLORS.primaryOrangeHex}/>
+          </TouchableOpacity>
         </View>
     </View>
   )
 }
 
 const ratingStyleFont = {
-  fontSize: FONTSIZE.size_24,
+  fontSize: FONTSIZE.size_20,
   fontFamily: FONTFAMILY.poppins_bold,
 }
 
@@ -104,7 +108,10 @@ const styles = StyleSheet.create({
     gap: 8
   },
   priceWrapper: {
-    marginTop: SPACING.space_15
+    marginTop: SPACING.space_15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end"
   },
   price: {
     ...ratingStyleFont,

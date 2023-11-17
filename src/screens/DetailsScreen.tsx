@@ -4,11 +4,14 @@ import { RootStackParamList } from '../../App';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useStore } from '../store/store';
 import { CoffeeType } from '../types/coffee';
+import { SizeTypes } from '../types/Size';
 import { BeanType } from '../types/bean';
 import CustomIcon from '../components/CustomIcon';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import GradientBGIcon from '../components/GradientBGIcon';
 import IconDetails from '../components/IconDetails';
+import ChooseBtn from '../components/ChooseBtn';
+import AppButton from '../components/AppButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, "Detail">;
 
@@ -16,6 +19,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
   const beanList = useStore<BeanType[]>((state: any) => state.BeanList);
   const coffeeList = useStore<CoffeeType[]>((state: any) => state.CoffeeList);
   const [data, setData] = useState<BeanType | CoffeeType | undefined>(undefined);
+  const [ size, setSize ] = useState<SizeTypes>(0);
   const { itemId, type } = route.params;
 
   const getDetails = (id: string, type: string): (BeanType | CoffeeType | undefined) => {
@@ -101,6 +105,46 @@ const DetailsScreen = ({ route, navigation }: Props) => {
             {data?.description}
           </Text>
         </View>
+
+        <View style={styles.weightAvailable}>
+          <Text style={styles.descTitle}>Size</Text>
+          <View style={styles.weights}>
+            {
+              data?.prices.map((item, idx) => (
+                <ChooseBtn
+                 key={idx} 
+                 text={item.size}
+                 active={size === idx}
+                 setSize={setSize}
+                 id={idx as SizeTypes}
+                />
+              ))
+            }
+          </View>
+        </View>
+
+        <View style={styles.priceContainer}>
+          <View style={styles.priceLeftContainer}>
+            <Text style={{
+              ...styles.descTitle,
+              fontSize: FONTSIZE.size_14,
+              fontFamily: FONTFAMILY.poppins_regular
+            }}>
+              Price
+            </Text>
+            <Text style={styles.priceValue}>
+              <Text style={styles.currencyStyle}>{ data?.prices[size].currency }</Text>
+              { data?.prices[size].price }
+            </Text>
+          </View>
+          <View style={styles.priceRightContainer}>
+            <AppButton 
+              text='Add To Cart'
+              textColor={COLORS.secondaryLightGreyHex}
+              bgColor={COLORS.primaryOrangeHex}
+            />
+          </View>
+        </View>
       </View>
     </ScrollView>
   )
@@ -110,6 +154,11 @@ const textStyle = {
   color: COLORS.secondaryLightGreyHex,
   fontSize: FONTSIZE.size_18,
   fontFamily: FONTFAMILY.poppins_medium
+}
+
+const priceFontStyle = {
+  fontFamily: FONTFAMILY.poppins_semibold,
+  fontSize: FONTSIZE.size_28,
 }
 
 const thinTextStyle = {
@@ -197,6 +246,36 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_18,
     color: COLORS.secondaryLightGreyHex
+  },
+  weightAvailable: {
+    marginTop: SPACING.space_8,
+    paddingHorizontal: SPACING.space_18
+  },
+  weights: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  priceContainer: {
+    flexDirection: "row",
+    marginTop: SPACING.space_18,
+    paddingHorizontal: SPACING.space_18,
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  priceLeftContainer: {
+    flexGrow: 1
+  },
+  priceRightContainer: {
+    flexGrow: 2
+  },
+  currencyStyle: {
+    color: COLORS.primaryOrangeHex,
+    ...priceFontStyle,
+  },
+  priceValue: {
+    ...priceFontStyle,
+    color: COLORS.secondaryLightGreyHex,
+    marginTop: -10
   }
 })
 
