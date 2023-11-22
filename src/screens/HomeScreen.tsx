@@ -7,7 +7,9 @@ import HeaderBar from '../components/HeaderBar';
 import Input from '../components/Input';
 import Categories from '../components/Categories';
 import CoffeeCard from '../components/CoffeeCard';
-import { CoffeeType } from "../types/coffee"
+import { CoffeeType } from "../types/coffee";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getCategoriesFromData = (data: any) => {
   let temp: any = {};
@@ -33,10 +35,12 @@ const getCoffeeList = (category: string, data: any) => {
 }
 
 const HomeScreen = ({ navigation }: any) => {
+  const insets = useSafeAreaInsets();
   // stores
   const CoffeeList = useStore((state: any) => state.CoffeeList);
   const BeanList = useStore((state: any) => state.BeanList);
-
+  // AsyncStorage.setItem('test', "12");
+  // console.log(useStore.persist.getOptions().storage?.getItem("test"))
   // states
   const [ categories, setCategories ] = useState(getCategoriesFromData(CoffeeList));
   const [ searchText, setSearchText ] = useState<string>("");
@@ -54,7 +58,13 @@ const HomeScreen = ({ navigation }: any) => {
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <View style={styles.ScreenContainer}>
+    <View style={{
+      ...styles.ScreenContainer,
+      paddingTop: insets.top,
+      paddingLeft: insets.left,
+      paddingBottom: insets.bottom,
+      paddingRight: insets.right,
+    }}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} translucent={true} />
       <ScrollView
        contentContainerStyle={styles.SCrollViewFlex}
@@ -164,3 +174,6 @@ const styles = StyleSheet.create({
 })
 
 export default HomeScreen
+export const homeScreenStyles = {
+  styles
+}

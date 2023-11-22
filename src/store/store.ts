@@ -7,13 +7,17 @@ import BeansData from "../data/BeansData";
 
 export const useStore = create(
   persist(
-    (set, get) => ({
+    (set, get: any) => ({
       CoffeeList: CoffeeData,
       BeanList: BeansData,
       FavoriteList: [],
       CartList: [],
       CartPrice: 0,
-      OrderHistoryList: []
+      OrderHistoryList: [],
+      addToCart: (toAdd: any) => {
+        const newCartList = [ ...get().CartList, toAdd ]
+        return set({ CartList: newCartList })
+      },
     }),
     {
       name: 'coffee-app',

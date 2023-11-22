@@ -18,6 +18,8 @@ type Props = NativeStackScreenProps<RootStackParamList, "Detail">;
 const DetailsScreen = ({ route, navigation }: Props) => {
   const beanList = useStore<BeanType[]>((state: any) => state.BeanList);
   const coffeeList = useStore<CoffeeType[]>((state: any) => state.CoffeeList);
+  const cart = useStore((state: any) => state.CartList);
+  const addToCart = useStore((state: any) => state.addToCart);
   const [data, setData] = useState<BeanType | CoffeeType | undefined>(undefined);
   const [ size, setSize ] = useState<SizeTypes>(0);
   const { itemId, type } = route.params;
@@ -31,6 +33,13 @@ const DetailsScreen = ({ route, navigation }: Props) => {
       }
     }
     return undefined;
+  }
+
+  const handleAddToCart = () => {
+    if(data) {
+      const toAdd = getDetails(data?.id, data?.type)
+      addToCart(toAdd)
+    }
   }
 
   useLayoutEffect(() => {
@@ -142,6 +151,7 @@ const DetailsScreen = ({ route, navigation }: Props) => {
               text='Add To Cart'
               textColor={COLORS.secondaryLightGreyHex}
               bgColor={COLORS.primaryOrangeHex}
+              onPress={handleAddToCart}
             />
           </View>
         </View>
