@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
 import React from 'react'
 import CustomIcon from './CustomIcon'
-import { SPACING } from '../theme/theme'
+import { BORDERRADIUS, SPACING } from '../theme/theme'
 
 type PropsType = {
   text: string,
@@ -9,15 +9,18 @@ type PropsType = {
   iconName: string,
   iconSize: number,
   iconColor: string,
-  bgColor: string
+  bgColor: string,
+  onPress: () => void
 }
 
-const AppButton: React.FC<Partial<PropsType>> = ({ text, iconName, iconSize, iconColor, bgColor, textColor }) => {
+const AppButton: React.FC<Partial<PropsType>> = ({ text, iconName, iconSize, iconColor, bgColor, textColor, onPress }) => {
   return (
     <TouchableOpacity style={{
       backgroundColor: bgColor,
       ...styles.container
-    }}>
+    }}
+      onPress={onPress}
+    >
       {
         text && <Text style={{
           color: textColor
@@ -34,7 +37,7 @@ const AppButton: React.FC<Partial<PropsType>> = ({ text, iconName, iconSize, ico
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: SPACING.space_12,
+    borderRadius: BORDERRADIUS.radius_8,
     alignItems: "center",
     padding: SPACING.space_12
   }

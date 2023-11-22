@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import HomeScreen from './src/screens/HomeScreen'
 import DetailsScreen from './src/screens/DetailsScreen'
@@ -6,6 +6,7 @@ import PaymentScreen from './src/screens/PaymentScreen'
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabNavigator from './src/navigators/TabNavigator'
+import { COLORS } from './src/theme/theme'
 
 export type RootStackParamList = {
   Tab: undefined,
@@ -18,9 +19,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const App = () => {
   return (
     <NavigationContainer>
+      <StatusBar 
+        backgroundColor={COLORS.primaryBlackHex} translucent={true}
+      />
       <Stack.Navigator
         screenOptions={{
-          headerShown: false
+          headerShown: false,
         }}
         initialRouteName='Tab'
       >
