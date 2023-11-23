@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store/store';
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -15,6 +15,7 @@ import { IPrices } from '../types/price';
 import { SizeTypes } from '../types/Size';
 import AppButton from '../components/AppButton';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 import { BlurView } from '@react-native-community/blur';
 
 type CartCardPropsType = {
@@ -22,7 +23,22 @@ type CartCardPropsType = {
 }
 
 type idType = {
-  id: SizeTypes
+  id: SizeTypes,
+  count?: number,
+  productId: string
+}
+
+type PriceType = 
+  {
+    size: string, 
+    price: string, 
+    count: number
+  }
+
+type TotalPriceType = {
+  id: string,
+  type: string,
+  prices: PriceType[]
 }
 
 // ******************************************* CartScreen ***************************************
@@ -30,9 +46,37 @@ type idType = {
 const CartScreen = () => {
   const insets = useSafeAreaInsets();
   const carts = useStore((state: any) => state.CartList);
+  const evaluateCartPrice = useStore((state: any) => state.evaluateCartPrice);
+  const cartPrice = useStore((state: any) => state.CartPrice);
   // AsyncStorage.clear()
   const tabBarBottomHeight = useBottomTabBarHeight();
+  const [ prices, setPrices ] = useState<TotalPriceType[]>([])
+
+  useFocusEffect(
+    useCallback(() => {
+      evaluateCartPrice();
+      const allPrices: TotalPriceType[] = carts.map((cart: any) => {
+        const prices: PriceType[] = cart.prices.map((item: any) => ({
+          size: item.size,
+          price: item.price,
+          count: 1
+        }));
   
+        return {
+          id: cart.id,
+          type: cart.type,
+          prices: prices
+        } as TotalPriceType
+      })
+  
+      setPrices(allPrices);
+
+      return () => {
+        // make something when component is unmounted
+      }
+    }, [])
+  );
+
   return (
     <View
       style={{
@@ -56,36 +100,35 @@ const CartScreen = () => {
       </View>
     </ScrollView>
 
-    <View style={[ styles.footer, {
-      position: "absolute",
-      bottom: tabBarBottomHeight,
-      zIndex: 1500,
-     }]}>
-      <View style={styles.totalPrice}>
-        <Text style={listPriceStyles.priceValue}>Total price</Text>
-        <View style={{
-          flexDirection: "row"
-        }}>
-          <Text style={listPriceStyles.currency}>$</Text>
-          <Text style={listPriceStyles.priceValue}> 4.15</Text>
-        </View>
-      </View>
-      <View style={styles.btnFooter}>
-        <AppButton 
-          text="Pay"
-          bgColor={COLORS.primaryOrangeHex}
-          textColor={COLORS.secondaryLightGreyHex}
-        />
-      </View>
-      </View>
+       {
+          carts.length !== 0 && (<View style={[ styles.footer, {
+            position: "absolute",
+            bottom: tabBarBottomHeight,
+            zIndex: 1500,
+          }]}>
+            <View style={styles.totalPrice}>
+              <Text style={listPriceStyles.priceValue}>Total price</Text>
+              <View style={{
+                flexDirection: "row"
+              }}>
+                <Text style={listPriceStyles.currency}>$</Text>
+                <Text style={listPriceStyles.priceValue}> { ` ${cartPrice}` }</Text>
+              </View>
+            </View>
+              <View style={styles.btnFooter}>
+                <AppButton 
+                  text="Pay"
+                  bgColor={COLORS.primaryOrangeHex}
+                  textColor={COLORS.secondaryLightGreyHex}
+                />
+              </View>
+            </View>)
+        }
     </View>
-
-    
   )
 }
 
 // ******************************************* CartCard ***************************************
-
 
 const CartCard: React.FC<CartCardPropsType> = ({ data }) => {
   return (
@@ -121,6 +164,8 @@ const CartCard: React.FC<CartCardPropsType> = ({ data }) => {
              price={price.price}
              id={idx}
              key={idx}
+             count={price.count}
+             productId={data.id}
             />
           ))
         }
@@ -132,8 +177,16 @@ const CartCard: React.FC<CartCardPropsType> = ({ data }) => {
 
 // ******************************************* List Price ***************************************
 
+const ListPrice: React.FC<IPrices & idType> = ({ currency, price, size, id, count, productId }) => {
+  const carts = useStore((state: any) => state.CartList);
+  const changePriceCount = useStore((state: any) => state.changePriceCount);
+  const evalulateCartPrice = useStore((state: any) => state.evaluateCartPrice);
+  
+  const handeChangeQty = (action: "add" | "subtract", id: string, index: SizeTypes) => {
+    changePriceCount(action, id, index);
+    evalulateCartPrice();
+  }
 
-const ListPrice: React.FC<IPrices & idType> = ({ currency, price, size, id }) => {
   return (
     <View style={listPriceStyles.container}>
       <ChooseBtn 
@@ -144,21 +197,23 @@ const ListPrice: React.FC<IPrices & idType> = ({ currency, price, size, id }) =>
       />
       <Text style={listPriceStyles.priceValue}>
         <Text style={listPriceStyles.currency}>{currency}</Text>
-        { price }
+        { ` ${price}` }
       </Text>
       <View style={listPriceStyles.quantity}>
         <AppButton 
-          iconName='add'
+          iconName='minus'
           bgColor={COLORS.primaryOrangeHex}
           iconSize={8}
           iconColor={COLORS.secondaryLightGreyHex}
+          onPress={() => handeChangeQty("subtract", productId, id)}
         />
-        <Text style={listPriceStyles.qtyValue}>{1}</Text>
+        <Text style={listPriceStyles.qtyValue}>{ count }</Text>
         <AppButton 
           iconName='add'
           bgColor={COLORS.primaryOrangeHex}
           iconSize={8}
           iconColor={COLORS.secondaryLightGreyHex}
+          onPress={() => handeChangeQty("add", productId, id)}
         />
       </View>
     </View>

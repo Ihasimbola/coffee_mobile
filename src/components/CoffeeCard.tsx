@@ -22,10 +22,11 @@ interface IProps {
     favourite: boolean;
     type: string;
     index: number;
-  }
+  },
+  navigation?: any
 }
 
-const CoffeeCard = ({ item }: IProps) => {
+const CoffeeCard = ({ item, navigation }: IProps) => {
 
   return (
     // <View >
@@ -55,7 +56,16 @@ const CoffeeCard = ({ item }: IProps) => {
               { ` ${item.prices[2].price}` }
             </Text>
             <TouchableOpacity>
-              <AppButton iconName='add' iconColor={COLORS.secondaryLightGreyHex} bgColor={COLORS.primaryOrangeHex}/>
+              <AppButton 
+               iconName='add' 
+               iconColor={COLORS.secondaryLightGreyHex} 
+               bgColor={COLORS.primaryOrangeHex}
+               onPress={() => navigation.navigate("Detail", {
+                itemId: item.id,
+                type: item.type
+               })}
+
+              />
             </TouchableOpacity>
           </View>
        </LinearGradient>

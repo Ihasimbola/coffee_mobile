@@ -10,7 +10,7 @@ type PropsType = {
   iconSize: number,
   iconColor: string,
   bgColor: string,
-  onPress: () => void
+  onPress: any
 }
 
 const AppButton: React.FC<Partial<PropsType>> = ({ text, iconName, iconSize, iconColor, bgColor, textColor, onPress }) => {

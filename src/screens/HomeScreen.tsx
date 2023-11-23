@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }: any) => {
                   type: item.item.type
                 })}
               >
-                <CoffeeCard item={item.item} />
+                <CoffeeCard item={item.item} navigation={navigation} />
               </TouchableOpacity>
             )}
             contentContainerStyle={styles.cardContainer}
@@ -126,7 +126,7 @@ const HomeScreen = ({ navigation }: any) => {
                   itemId: item.item.id,
                   type: item.item.type
                 })}>
-                  <CoffeeCard item={item.item} />
+                  <CoffeeCard item={item.item} navigation={navigation} />
                 </TouchableOpacity>
               )}
               contentContainerStyle={styles.cardContainer}
